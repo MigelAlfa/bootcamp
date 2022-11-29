@@ -9,3 +9,10 @@ gitlab_external_url: "https://git.it-academy.by"
 ```
 ansible-playbook -i inventory.yaml gitlab.yaml --ask-become-pass --become
 ```
+
+# copy init passwd
+```
+scp root@ip host:/etc/gitlab/initial_root_password /home/user
+
+/etc/gitlab/initial_root_password
+```

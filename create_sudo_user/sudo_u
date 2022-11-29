@@ -1,0 +1,62 @@
+---
+- name: Ansible Create user functionlity module demo
+  hosts: boot
+  gather_facts: false
+  vars_prompt:
+
+    - name: user_name
+      prompt: "Enter the user name"
+      private: false
+
+    - name: user_uid
+      prompt: "Enter uid for new user from 1000 to 10000" 
+      private: false
+
+  tasks:
+
+    - name: install app
+      apt:
+       name:
+       - sudo
+       - gnupg
+       - curl
+       - wget
+       - ca-certificates
+       - perl
+       update_cache: yes
+
+
+# Too create password use "mkpasswd --method=sha-512" and copy in to password
+
+    - name: Add the user with a specific uid and a primary group of 'sudo'
+      ansible.builtin.user:
+        name: "{{ user_name }}"
+        password: # mkpasswd --method=sha-512
+        comment: "{{ user_name }}"
+        uid: "{{ user_uid }}"
+        group: sudo
+        createhome: yes        
+        home: /home/{{ user_name }} 
+
+# Change *** to you home dir 
+    - name: Set authorized key in alternate location
+      authorized_key:
+         user: "{{ user_name }}"
+         state: present
+         key: "{{ lookup('file', '/home/***/.ssh/id_rsa.pub') }}"
+         path: /home/"{{ user_name }}"/.ssh/authorized_keys
+         manage_dir: False
+
+
+    - name: Add group "editor" to remote node
+      group:
+        name: devops
+        gid: 2212
+        state: present
+
+    - name: Add the user with a bash shell, appending the group 'editor' to the user's groups
+      ansible.builtin.user:
+        name: "{{ user_name }}"
+        shell: /bin/bash
+        groups: devops
+        append: yes

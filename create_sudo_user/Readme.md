@@ -1,5 +1,10 @@
 # How to use
 ```
+need change in 
+nano /etc/ansible/ansible.cfg
+
+host_key_checking = False
+
 Too create password
 sudo apt install mkpasswd
 mkpasswd --method=sha-512

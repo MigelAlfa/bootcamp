@@ -19,9 +19,7 @@
        name:
        - sudo
        - gnupg
-       - curl
        - wget
-       - ca-certificates
        - perl
        update_cache: yes
 
@@ -31,20 +29,20 @@
     - name: Add the user with a specific uid and a primary group of 'sudo'
       ansible.builtin.user:
         name: "{{ user_name }}"
-        password: # mkpasswd --method=sha-512
+        password: #mkpasswd --method=sha-512
         comment: "{{ user_name }}"
         uid: "{{ user_uid }}"
         group: sudo
         createhome: yes        
-        home: /home/{{ user_name }} 
+        home: /home/"{{ user_name }}"
 
-# Change *** to you home dir 
+# Change in key: *** to you home dir 
     - name: Set authorized key in alternate location
       authorized_key:
          user: "{{ user_name }}"
          state: present
          key: "{{ lookup('file', '/home/***/.ssh/id_rsa.pub') }}"
-         path: /home/"{{ user_name }}"/.ssh/authorized_keys
+         path: /home/{{ user_name }}/.ssh/authorized_keys
          manage_dir: False
 
 

@@ -5,5 +5,5 @@ boot:
     it_boot:
       hosts:
         debian:
-          ansible_host: 192.168.100.20
+          ansible_host: 192.168.100.30
 

@@ -1,4 +1,4 @@
-boot:
+gitlabvm:
   vars:
     ansible_user: root
   children:
@@ -6,4 +6,3 @@ boot:
       hosts:
         debian:
           ansible_host: 192.168.100.30
-

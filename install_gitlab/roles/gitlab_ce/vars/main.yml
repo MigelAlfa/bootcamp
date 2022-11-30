@@ -17,3 +17,6 @@
 _gitlab_version:
   "15.5": "15.5.4"
   "15.4": "15.4.5"
+
+#git_url: 
+# - { git.it-academy.by }

@@ -1,4 +1,4 @@
-boot:
+gitlabvm:
   vars:
     ansible_user: some user
   children:

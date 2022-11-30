@@ -1,0 +1,53 @@
+---
+- name: Ansible Create sudo-user for administration
+  hosts: gitlabvm
+  gather_facts: false
+  vars_prompt:
+
+    - name: user_name
+      prompt: "Enter the user name"
+      private: false
+
+  tasks:
+
+    - name: Install basic packages
+      apt:
+          name:
+            - sudo
+            - gnupg
+            - wget
+          update_cache: yes
+
+# To create password use "mkpasswd --method=sha-512" and copy in to password
+
+    - name: Add "editor" group to remote node
+      ansible.builtin.group:
+          name: devops
+          state: present
+
+
+
+    - name: Import secrets from vault
+      ansible.builtin.include_vars:
+          file: "vault.yaml"
+
+
+    - name: Add the user with sudo group
+      ansible.builtin.user:
+          name: "{{ user_name }}"
+          password: "{{ sudo_user_name }}" # mkpasswd --method=sha-512
+          comment: "{{ user_name }}"
+          shell: /bin/bash
+          groups: sudo,devops
+          append: yes
+
+
+    - name: Set up multiple authorized keys
+      ansible.posix.authorized_key:
+          user: "{{ user_name }}"
+          state: present
+          key: "{{ item }}"
+      with_items:
+          - "{{ lookup('url', 'https://github.com/vpravalinski.keys', split_lines=False) }}"
+          - "{{ lookup('url', 'https://github.com/alexv8888.keys', split_lines=False) }}"
+          - "{{ lookup('url', 'https://github.com/MigelAlfa.keys', split_lines=False) }}"

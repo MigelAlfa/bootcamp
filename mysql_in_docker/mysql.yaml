@@ -1,0 +1,45 @@
+---
+- name: Running MYSQL Database as Docker Container using Ansible.
+  hosts: boot
+  remote_user: root
+  vars_prompt:
+
+
+
+    - name: password
+      prompt: "Enter passwd for root"
+      private: false
+
+    - name: db_name
+      prompt: "Enter name to database"
+      private: false
+
+    - name: db_user
+      prompt: "Enter user name"
+      private: false
+
+    - name: db_user_passwd
+      prompt: "Enter passwd for db user"
+      private: false
+
+  vars:
+    db_volume: db_data
+    
+    
+  tasks:
+
+  - name: Launch mysql database container
+    docker_container:
+      name: db
+      image: mysql:latest
+      volumes:
+        - "{{ db_volume }}:/var/lib/mysql"
+
+      restart: true
+      env:
+        MYSQL_ROOT_PASSWORD: "{{ password }}"
+        MYSQL_DATABASE: "{{ db_name }}"
+        MYSQL_USER: "{{ db_user }}"
+        MYSQL_PASSWORD: "{{ db_user_passwd }}"
+      ports:
+        - "33306:3306"

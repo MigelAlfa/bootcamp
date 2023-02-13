@@ -48,6 +48,6 @@
           state: present
           key: "{{ item }}"
       with_items:
-          - "{{ lookup('url', 'https://github.com/vpravalinski.keys', split_lines=False) }}"
-          - "{{ lookup('url', 'https://github.com/alexv8888.keys', split_lines=False) }}"
-          - "{{ lookup('url', 'https://github.com/MigelAlfa.keys', split_lines=False) }}"
+          - "{{ lookup('url', 'https://github.com/***.keys', split_lines=False) }}"
+          - "{{ lookup('url', 'https://github.com/***.keys', split_lines=False) }}"
+          - "{{ lookup('url', 'https://github.com/***.keys', split_lines=False) }}"

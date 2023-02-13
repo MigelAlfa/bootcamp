@@ -1,0 +1,10 @@
+---
+- name: docker plugin install
+  hosts: boot
+  gather_facts: false
+  tasks:
+   - name: install grafana loki docker driver
+     become: true
+     ansible.builtin.shell: |
+      docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+      systemctl restart docker

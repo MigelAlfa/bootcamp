@@ -1,0 +1,15 @@
+boot:
+  vars:
+    ansible_user: user
+  children:
+    it_boot:
+      hosts:
+        node1:
+          ansible_host: 192.168.100.108
+          ansible_node_name: node1
+        node2:
+          ansible_host: 192.168.100.109
+          ansible_node_name: node2
+        node3:
+          ansible_host: 192.168.100.110
+          ansible_node_name: node3

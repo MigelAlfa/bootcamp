@@ -1,0 +1,10 @@
+---
+- name: Add ssl certificate to TeamCity
+  hosts: teamcity
+  vars_prompt:
+    - name: keystore_pass
+      prompt: "Enter Keystore_pass"
+      private: false
+  gather_facts: false
+  roles:
+    - https_teamcity

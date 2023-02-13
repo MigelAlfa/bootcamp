@@ -1,0 +1,9 @@
+gitlabvm:
+  vars:
+    ansible_user: some user
+  children:
+    it_boot:
+      hosts:
+        debian:
+          ansible_host: some ip
+

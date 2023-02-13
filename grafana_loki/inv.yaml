@@ -1,0 +1,8 @@
+boot:
+  vars:
+    ansible_user: user
+  children:
+    it_boot:
+      hosts:
+        debian:
+          ansible_host: ip

@@ -1,0 +1,43 @@
+---
+  - name: Generate private key
+    become: true
+    openssl_privatekey:
+      path: "/etc/ssl/{{ openssl_name }}.key"
+
+  - name: Generate CSR
+    become: true
+    openssl_csr:
+      path: "/etc/ssl/{{ openssl_name }}.csr"
+      privatekey_path: "/etc/ssl/{{ openssl_name }}.key"
+      country_name: BY
+      organization_name: "ITacad"
+      common_name: "{{ openssl_name }}"
+
+  - name: Generate a Self Signed OpenSSL certificate
+    community.crypto.x509_certificate:
+      path: "/etc/ssl/{{ openssl_name }}.crt"
+      privatekey_path: "/etc/ssl/{{ openssl_name }}.key"
+      csr_path: "/etc/ssl/{{ openssl_name }}.csr"
+      provider: selfsigned
+  
+  - name: Create a keystore for the given certificate/private key pair (with files on target host)
+    community.general.java_keystore:
+      name: tc
+      certificate_path: "/etc/ssl/{{ openssl_name }}.crt"
+      private_key_path: "/etc/ssl/{{ openssl_name }}.key"
+      password: "{{ keystore_pass }}"
+      dest: "/etc/ssl/{{ openssl_name }}.jks"
+
+  - name: create server.xml
+    template:
+      src: server.xml.j2
+      dest: "{{ teamcitypath }}/conf/server.xml"
+      owner: root
+      group: root
+      mode: '0644'
+      backup: yes
+
+  - name: Restart service teamcity.service
+    ansible.builtin.service:
+      name: teamcity.service
+      state: restarted

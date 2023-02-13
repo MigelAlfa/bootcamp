@@ -1,0 +1,6 @@
+---
+- hosts: boot
+  roles:
+    - apache
+    - munin
+    - munin_node

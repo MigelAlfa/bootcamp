@@ -1,0 +1,40 @@
+---
+- name: Add vpn users to RouterOS
+  hosts: mikrotik
+  gather_facts: false
+  vars_prompt:
+
+    - name: router_ip
+      prompt: "Router IP"
+      private: false
+
+    - name: ansible_user
+      prompt: "RouterOS: Enter the username"
+      private: false
+
+    - name: ansible_ssh_pass
+      prompt: "RouterOS: Enter the password"
+      private: false
+
+    - name: profile
+      prompt: "Enter l2tp vpn profile name"
+      private: false
+        
+  tasks:
+
+  - name: Write the router host key to known hosts
+    connection: local
+    ansible.builtin.shell: |
+      mkdir ~/.ssh/
+      ssh-keyscan -H {{ router_ip }} >> ~/.ssh/known_hosts
+
+  - name: Import secrets from vault
+    ansible.builtin.include_vars:
+      file: "vault.yaml"
+
+  - name: Add users
+    community.routeros.command:
+      commands:
+        - /ppp secret add name="{{ item.name }}" password="{{ lookup('ansible.builtin.password', '/tmp/passwords/{{ item.name }} length=12')}}" profile="{{ profile }}"
+        
+    with_items: "{{ user_details }}"
